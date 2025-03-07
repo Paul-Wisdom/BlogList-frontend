@@ -1,93 +1,12 @@
 import { useState, useEffect } from 'react'
+
 import Blog from './components/Blog'
+import BlogForm from './components/BlogForm'
+import Message from './components/Message'
+
 import blogService from './services/blogs'
 import userService from './services/user'
 
-
-const Message = ({ msg, msgType }) => {
-  const baseStyle = {
-    width: '100vw',
-    height: '36px',
-    color: 'green',
-    backgroundColor: 'grey',
-    border: '2px solid green',
-    borderRadius: '10px',
-    paddingLeft: '10px',
-    paddingTop: '10px'
-  }
-
-  const errorStyle = { ...baseStyle, color: 'red', border: '2px solid red' }
-  const style = msgType === 'error' ? errorStyle : baseStyle
-  return (msg ?
-    <div style={style}>
-      {msg}
-    </div>
-    : ''
-  )
-}
-
-const BlogForm = ({ user, msg, setMsg, blogs, setBlogs, msgType, setMsgType }) => {
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
-
-  const handleBlogCreation = async (e) => {
-    e.preventDefault();
-
-    console.log(title, author, url);
-    try {
-      const response = await blogService.createBlog({ title, author, url });
-      console.log(response)
-      console.log('blog', blogs)
-      const newBlog = response.data;
-      console.log('new blog', newBlog);
-      blogs.push(newBlog);
-      // const blogList = [...blogs]
-      // blogList.push(newBlog)
-      // setBlogs(blogList)
-      console.log('blog list', blogs)
-      const successMessage = `a new blog ${newBlog.title} by ${newBlog.author} added`
-      setMsg(successMessage)
-      setTimeout(() => {
-        setMsg(null)
-      }, 5000)
-      setAuthor('')
-      setTitle('')
-      setUrl('')
-    }
-    catch (error) {
-      console.log(error);
-      setMsgType('error')
-      setMsg(error.response.data.message)
-      setTimeout(() => {
-        setMsg(null)
-        setMsgType('')
-      }, 5000)
-    }
-  }
-
-  return (
-    <div>
-      <Message msg={msg} msgType={msgType} />
-      <h2>create new blogs</h2>
-      <form onSubmit={handleBlogCreation}>
-        <div>
-          <label id='title'>Title:</label>
-          <input type="text" id='title' name='title' value={title} onChange={(e) => setTitle(e.target.value)} />
-        </div>
-        <div>
-          <label id='author'>Author:</label>
-          <input type="text" id='author' name='author' value={author} onChange={(e) => setAuthor(e.target.value)} />
-        </div>
-        <div>
-          <label id='url'>URL:</label>
-          <input type="text" id='url' name='url' value={url} onChange={(e) => setUrl(e.target.value)} />
-        </div>
-        <button type="submit">create</button>
-      </form>
-    </div>
-  )
-}
 
 const LoginForm = ({ msg, setMsg, setUser, msgType, setMsgType }) => {
   const [username, setUsername] = useState('');
@@ -190,10 +109,10 @@ const App = () => {
       <h2>blogs</h2>
       <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
       <Togglable buttonLabel={"new note"}>
-        <BlogForm user={user} blogs={blogs} msg={msg} setMsg={setMsg} setBlogs={setBlogs} msgType={msgType} setMsgType={setMsgType} />
+        <BlogForm user={user} blogs={blogs} msg={msg} setMsg={setMsg} setBlogs={setBlogs} msgType={msgType} setMsgType={setMsgType} createBlog={blogService.createBlog}/>
       </Togglable>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} setUser={setUser} setBlogs={setBlogs} blogs={blogs}/>
+        <Blog key={blog.id} blog={blog} setUser={setUser} setBlogs={setBlogs} blogs={blogs} likeBlog={blogService.likeBlog} deleteBlog={blogService.deleteBlog}/>
       )}
     </div>
   )

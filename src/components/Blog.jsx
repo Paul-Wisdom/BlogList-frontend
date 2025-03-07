@@ -1,8 +1,7 @@
 import { useState } from "react"
-import blogService from "../services/blogs";
 import PropTypes from "prop-types";
 
-const Blog = ({ blog, setUser, setBlogs, blogs }) => {
+const Blog = ({ blog, setUser, setBlogs, blogs, likeBlog, deleteBlog }) => {
   const [detailsVisible, setDetailsVisble] = useState(false);
   const [buttonLabel, setButtonLabel] = useState('view');
   const visibleStyle = { display: detailsVisible ? '' : 'none' }
@@ -29,7 +28,7 @@ const Blog = ({ blog, setUser, setBlogs, blogs }) => {
       const confirmation = window.confirm(`Remove blog ${blog.title} by ${blog.author}`);
       console.log(confirmation)
       if (confirmation) {
-        await blogService.deleteBlog(blog.id);
+        await deleteBlog(blog.id);
         const newBlogs = blogs.filter(b => b.id !== blog.id)
         setBlogs(newBlogs);
       }
@@ -41,11 +40,11 @@ const Blog = ({ blog, setUser, setBlogs, blogs }) => {
 
   const handleLike = async () => {
     try {
-      const response = await blogService.likeBlog(blog.id, blog.likes + 1)
+      const response = await likeBlog(blog.id, blog.likes + 1)
       console.log(response);
       setUser(response.data.userId)
     }
-    catch (e) {
+    catch (error) {
       console.log(error);
     }
 
@@ -54,8 +53,8 @@ const Blog = ({ blog, setUser, setBlogs, blogs }) => {
 
   return (
     <div style={generalStyle}>
-      <div>{blog.title} {blog.author} <button onClick={handleClick}>{buttonLabel}</button></div>
-      <div style={visibleStyle}>
+      <div><p>{blog.title}</p> <p>{blog.author}</p> <button onClick={handleClick}>{buttonLabel}</button></div>
+      <div style={visibleStyle} data-testid="togglableContent"> 
         <div>{blog.url}</div>
         <div>{blog.likes} <button onClick={handleLike}>like</button></div>
         <div>{blog.userId.name}</div>

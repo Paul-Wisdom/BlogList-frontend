@@ -40,11 +40,11 @@ const LoginForm = ({ msg, setMsg, setUser, msgType, setMsgType }) => {
         <h2>log in to application</h2>
         <div>
           <label id='username'>username:</label>
-          <input type='text' name='username' id='username' value={username} onChange={(e) => setUsername(e.target.value)}></input>
+          <input type='text' data-testid="username" name='username' id='username' value={username} onChange={(e) => setUsername(e.target.value)}></input>
         </div>
         <div>
           <label id='password'>password:</label>
-          <input type="password" name='password' id='password' value={password} onChange={(e) => setPassword(e.target.value)}></input>
+          <input type="password" data-testid="password" name='password' id='password' value={password} onChange={(e) => setPassword(e.target.value)}></input>
         </div>
         <button type='submit'>login</button>
       </form>
@@ -112,7 +112,7 @@ const App = () => {
         <BlogForm user={user} blogs={blogs} msg={msg} setMsg={setMsg} setBlogs={setBlogs} msgType={msgType} setMsgType={setMsgType} createBlog={blogService.createBlog}/>
       </Togglable>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} setUser={setUser} setBlogs={setBlogs} blogs={blogs} likeBlog={blogService.likeBlog} deleteBlog={blogService.deleteBlog}/>
+        <Blog key={blog.id}  user = {user} blog={blog} setUser={setUser} setBlogs={setBlogs} blogs={blogs} likeBlog={blogService.likeBlog} deleteBlog={blogService.deleteBlog}/>
       )}
     </div>
   )

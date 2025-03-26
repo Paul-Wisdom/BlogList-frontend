@@ -1,7 +1,7 @@
 import { useState } from "react"
 import PropTypes from "prop-types";
 
-const Blog = ({ blog, setUser, setBlogs, blogs, likeBlog, deleteBlog }) => {
+const Blog = ({user, blog, setUser, setBlogs, blogs, likeBlog, deleteBlog }) => {
   const [detailsVisible, setDetailsVisble] = useState(false);
   const [buttonLabel, setButtonLabel] = useState('view');
   const visibleStyle = { display: detailsVisible ? '' : 'none' }
@@ -52,13 +52,13 @@ const Blog = ({ blog, setUser, setBlogs, blogs, likeBlog, deleteBlog }) => {
   // console.log(blog)
 
   return (
-    <div style={generalStyle}>
+    <div style={generalStyle} className="blog">
       <div><p>{blog.title}</p> <p>{blog.author}</p> <button onClick={handleClick}>{buttonLabel}</button></div>
       <div style={visibleStyle} data-testid="togglableContent"> 
         <div>{blog.url}</div>
         <div>{blog.likes} <button onClick={handleLike}>like</button></div>
         <div>{blog.userId.name}</div>
-        <div><button onClick={handleDelete}>remove</button></div>
+        <div style={{display: blog.userId.username !== user.username? 'none': ''}}><button onClick={handleDelete}>remove</button></div>
       </div>
     </div>
   )
